@@ -8,10 +8,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { resolve } = require('path');
-const { existsSync } = require('fs');
+// const fs = require('fs');
 // const {
 //   TsConfigPathsPlugin
 // } = require('awesome-typescript-loader');
@@ -28,8 +28,7 @@ function projectPath(relativePath) {
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
 // TODO serviceworker typescript sass
-// MiniCssExtractPlugin https://webpack.js.org/plugins/mini-css-extract-plugin/
-module.exports = function(env = { production: false }, argv) {
+module.exports = function(env = { production: false } /* , argv */) {
   if (env.production) {
     // babel-preset-umi 是根据 NODE_ENV 判断的
     process.env.NODE_ENV = 'production';
@@ -147,46 +146,44 @@ module.exports = function(env = { production: false }, argv) {
     },
   ];
 
-  let plugins;
-  if (isDev) {
-    plugins = [
-      new webpack.HotModuleReplacementPlugin(),
-      // https://www.npmjs.com/package/react-dev-utils
-      new WatchMissingNodeModulesPlugin(projectPath('node_modules')),
-      // https://github.com/jannesmeyer/system-bell-webpack-plugin
-      new SystemBellWebpackPlugin(),
-      // 用于代替 devtool 选项 进行更细粒度的控制 https://doc.webpack-china.org/plugins/source-map-dev-tool-plugin/
-      // TODO
-      // new webpack.SourceMapDevToolPlugin({
-      //   columns: false,
-      //   moduleFilenameTemplate: info => {
-      //     if (
-      //       /\/koi-pkgs\/packages/.test(
-      //         info.absoluteResourcePath,
-      //       ) ||
-      //       /packages\/koi-core/.test(info.absoluteResourcePath) ||
-      //       /webpack\/bootstrap/.test(info.absoluteResourcePath) ||
-      //       /\/node_modules\//.test(info.absoluteResourcePath)
-      //     ) {
-      //       return `internal:///${info.absoluteResourcePath}`;
-      //     }
-      //     return resolve(info.absoluteResourcePath).replace(
-      //       /\\/g,
-      //       '/',
-      //     );
-      //   },
-      // }),
-    ];
-  } else {
-    plugins = [
+  const plugins = [
+    isDev && new webpack.HotModuleReplacementPlugin(),
+    // https://www.npmjs.com/package/react-dev-utils
+    isDev && new WatchMissingNodeModulesPlugin(projectPath('node_modules')),
+    // https://github.com/jannesmeyer/system-bell-webpack-plugin
+    isDev && new SystemBellWebpackPlugin(),
+    // 用于代替 devtool 选项 进行更细粒度的控制 https://doc.webpack-china.org/plugins/source-map-dev-tool-plugin/
+    // TODO
+    // isDev && new webpack.SourceMapDevToolPlugin({
+    //   columns: false,
+    //   moduleFilenameTemplate: info => {
+    //     if (
+    //       /\/koi-pkgs\/packages/.test(
+    //         info.absoluteResourcePath,
+    //       ) ||
+    //       /packages\/koi-core/.test(info.absoluteResourcePath) ||
+    //       /webpack\/bootstrap/.test(info.absoluteResourcePath) ||
+    //       /\/node_modules\//.test(info.absoluteResourcePath)
+    //     ) {
+    //       return `internal:///${info.absoluteResourcePath}`;
+    //     }
+    //     return resolve(info.absoluteResourcePath).replace(
+    //       /\\/g,
+    //       '/',
+    //     );
+    //   },
+    // }),
+
+    !isDev &&
       new CleanWebpackPlugin([outputPath], {
         root: projectRoot,
       }),
-      new MiniCssExtractPlugin(),
-    ];
-  }
+    !isDev &&
+      new MiniCssExtractPlugin({
+        filename: `[name]${cssHash}.css`,
+        chunkFilename: `[id]${cssHash}.css`,
+      }),
 
-  plugins = plugins.concat([
     // 只定义 process.env.NODE_ENV 的话在 webpack4 以上可以省略
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
@@ -206,17 +203,14 @@ module.exports = function(env = { production: false }, argv) {
         toType: 'dir',
       },
     ]),
-    ...(process.env.ANALYZE
-      ? [
-          // https://github.com/webpack-contrib/webpack-bundle-analyzer
-          new BundleAnalyzerPlugin({
-            analyzerMode: 'server',
-            analyzerPort: process.env.ANALYZE_PORT || 8888,
-            openAnalyzer: true,
-          }),
-        ]
-      : []),
-  ]);
+    // https://github.com/webpack-contrib/webpack-bundle-analyzer
+    process.env.ANALYZE &&
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'server',
+        analyzerPort: process.env.ANALYZE_PORT || 8888,
+        openAnalyzer: true,
+      }),
+  ].filter(Boolean);
 
   const config = {
     mode: isDev ? 'development' : 'production',
@@ -230,7 +224,8 @@ module.exports = function(env = { production: false }, argv) {
       publicPath: '/',
       chunkFilename: `[name]${jsHash}.async.js`,
     },
-    devtool: isDev ? 'eval-source-map' : 'none', //'source-map',
+    // 'source-map'
+    devtool: isDev ? 'eval-source-map' : 'none',
     devServer: isDev
       ? {
           port: 9007,

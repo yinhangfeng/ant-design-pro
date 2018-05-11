@@ -59,6 +59,9 @@ module.exports = {
     'function-paren-newline': [0],
     'no-restricted-globals': [0],
     'require-yield': [1],
+
+    // 扩展
+    'no-param-reassign': [1], // https://eslint.org/docs/rules/no-param-reassign
   },
   parserOptions: {
     ecmaFeatures: {
