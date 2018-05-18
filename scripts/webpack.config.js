@@ -256,6 +256,8 @@ module.exports = function(env = { production: false } /* , argv */) {
     },
     module: {
       rules: [
+        // https://github.com/webpack-contrib/url-loader
+        // TODO 可用于加载 .svg 是否有更好的方案
         {
           exclude: [/\.html|ejs$/, /\.json$/, /\.(js|jsx|ts|tsx)$/, /\.(css|less|scss|sass)$/],
           loader: 'url-loader',

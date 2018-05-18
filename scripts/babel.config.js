@@ -2,7 +2,7 @@
 // umi preset
 
 // TODO https://github.com/jamiebuilds/babel-react-optimize
-module.exports = function ({ isDev }) {
+module.exports = function({ isDev }) {
   const plugins = [['import', { libraryName: 'antd', libraryDirectory: 'es', style: true }]];
   if (isDev) {
     // 开发环境不需要分包加载
@@ -10,6 +10,10 @@ module.exports = function ({ isDev }) {
     plugins.push('dynamic-import-node-sync');
     plugins.push('dva-hmr');
   }
+  // else {
+  //   plugins.push('dynamic-import-node-sync');
+  // }
+
   return {
     presets: [
       // TODO options https://github.com/umijs/umi/blob/master/packages/babel-preset-umi/src/index.js
