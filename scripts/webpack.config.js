@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const SystemBellWebpackPlugin = require('system-bell-webpack-plugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+// const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const postcssFlexbugsFixes = require('postcss-flexbugs-fixes');
 const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -36,6 +36,20 @@ module.exports = function(env = { production: false } /* , argv */) {
 
   const isDev = !env.production;
 
+  // https://github.com/browserslist/browserslist
+  let browsers;
+  if (isDev) {
+    // dev 环境只兼容新浏览器 以方便调试 增加编译速度 TODO 用环境变量配置
+    browsers = ['last 3 Chrome versions'];
+  } else {
+    browsers = [
+      '>1%',
+      'last 4 versions',
+      'Firefox ESR',
+      'not ie < 9', // React doesn't support IE8 anyway
+    ];
+  }
+
   const postcssOptions = {
     // Necessary for external CSS imports to work
     // https://github.com/facebookincubator/create-react-app/issues/2677
@@ -43,12 +57,7 @@ module.exports = function(env = { production: false } /* , argv */) {
     plugins: () => [
       postcssFlexbugsFixes,
       autoprefixer({
-        browsers: [
-          '>1%',
-          'last 4 versions',
-          'Firefox ESR',
-          'not ie < 9', // React doesn't support IE8 anyway
-        ],
+        browsers,
         flexbox: 'no-2009',
       }),
     ],
@@ -142,6 +151,7 @@ module.exports = function(env = { production: false } /* , argv */) {
       loader: 'babel-loader',
       options: getBabelConfig({
         isDev,
+        browsers,
       }),
     },
   ];
@@ -149,7 +159,8 @@ module.exports = function(env = { production: false } /* , argv */) {
   const plugins = [
     isDev && new webpack.HotModuleReplacementPlugin(),
     // https://www.npmjs.com/package/react-dev-utils
-    isDev && new WatchMissingNodeModulesPlugin(projectPath('node_modules')),
+    // TODO
+    // isDev && new WatchMissingNodeModulesPlugin(projectPath('node_modules')),
     // https://github.com/jannesmeyer/system-bell-webpack-plugin
     isDev && new SystemBellWebpackPlugin(),
     // 用于代替 devtool 选项 进行更细粒度的控制 https://doc.webpack-china.org/plugins/source-map-dev-tool-plugin/

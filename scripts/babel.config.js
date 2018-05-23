@@ -2,7 +2,7 @@
 // umi preset
 
 // TODO https://github.com/jamiebuilds/babel-react-optimize
-module.exports = function({ isDev }) {
+module.exports = function({ isDev, browsers }) {
   const plugins = [['import', { libraryName: 'antd', libraryDirectory: 'es', style: true }]];
   if (isDev) {
     // 开发环境不需要分包加载
@@ -22,6 +22,7 @@ module.exports = function({ isDev }) {
         'babel-preset-umi',
         {
           useBuiltIns: 'entry',
+          browsers,
         },
       ],
     ],
