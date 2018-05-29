@@ -226,7 +226,7 @@ module.exports = function(env = { production: false } /* , argv */) {
   const config = {
     mode: isDev ? 'development' : 'production',
     // TODO webpackHotDevClientPath
-    entry: projectPath('src/index.js'),
+    entry: projectPath('xxx/xxx2.js'),
     output: {
       path: outputPath,
       // Add /* filename */ comments to generated require()s in the output.
@@ -236,7 +236,7 @@ module.exports = function(env = { production: false } /* , argv */) {
       chunkFilename: `[name]${jsHash}.async.js`,
     },
     // 'source-map'
-    devtool: isDev ? 'eval-source-map' : 'none',
+    devtool: isDev ? 'source-map' : 'none',
     devServer: isDev
       ? {
           port: 9007,
