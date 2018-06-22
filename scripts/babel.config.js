@@ -2,6 +2,7 @@
 // umi preset
 
 // TODO https://github.com/jamiebuilds/babel-react-optimize
+// https://github.com/facebook/create-react-app/blob/next/packages/babel-preset-react-app/index.js
 module.exports = function({ isDev, browsers }) {
   const plugins = [['import', { libraryName: 'antd', libraryDirectory: 'es', style: true }]];
   if (isDev) {

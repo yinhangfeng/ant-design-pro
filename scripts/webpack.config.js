@@ -27,7 +27,9 @@ function projectPath(relativePath) {
 
 // https://webpack.js.org/configuration
 // https://github.com/umijs/umi/blob/master/packages/af-webpack/src/getConfig.js
+// https://github.com/facebook/create-react-app/blob/next/packages/react-scripts/config/webpack.config.prod.js
 // TODO serviceworker typescript sass
+// TODO js css file-loader 输出路径
 module.exports = function(env = { production: false } /* , argv */) {
   if (env.production) {
     // babel-preset-umi 是根据 NODE_ENV 判断的
@@ -268,7 +270,7 @@ module.exports = function(env = { production: false } /* , argv */) {
     module: {
       rules: [
         // https://github.com/webpack-contrib/url-loader
-        // TODO 可用于加载 .svg 是否有更好的方案
+        // 考虑 减小 limit 或者 直接用 file-loader
         {
           exclude: [/\.html|ejs$/, /\.json$/, /\.(js|jsx|ts|tsx)$/, /\.(css|less|scss|sass)$/],
           loader: 'url-loader',
