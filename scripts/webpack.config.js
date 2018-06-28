@@ -16,7 +16,7 @@ const { resolve } = require('path');
 //   TsConfigPathsPlugin
 // } = require('awesome-typescript-loader');
 
-const getBabelConfig = require('./babel.config.js');
+const createBabelConfig = require('./createBabelConfig.js');
 const theme = require('../src/theme');
 
 const projectRoot = resolve(__dirname, '../');
@@ -30,6 +30,7 @@ function projectPath(relativePath) {
 // https://github.com/facebook/create-react-app/blob/next/packages/react-scripts/config/webpack.config.prod.js
 // TODO serviceworker typescript sass
 // TODO js css file-loader 输出路径
+// TODO babelUse 包括 node_modules https://github.com/facebook/create-react-app/pull/3776
 module.exports = function(env = { production: false } /* , argv */) {
   if (env.production) {
     // babel-preset-umi 是根据 NODE_ENV 判断的
@@ -66,13 +67,13 @@ module.exports = function(env = { production: false } /* , argv */) {
   };
   const cssModulesConfig = {
     modules: true,
-    localIdentName: isDev ? '[name]__[local]___[hash:base64:5]' : '[local]___[hash:base64:5]',
+    localIdentName: isDev ? '[name]_[local]__[hash:base64:5]' : '[local]__[hash:base64:5]',
   };
   const lessOptions = {
     modifyVars: theme,
   };
   const cssOptions = {
-    constLoaders: 1,
+    importLoaders: 1,
     ...(!isDev && {
       minimize: {
         // ref: https://github.com/umijs/umi/issues/164
@@ -151,7 +152,7 @@ module.exports = function(env = { production: false } /* , argv */) {
   const babelUse = [
     {
       loader: 'babel-loader',
-      options: getBabelConfig({
+      options: createBabelConfig({
         isDev,
         browsers,
       }),
@@ -229,6 +230,7 @@ module.exports = function(env = { production: false } /* , argv */) {
     mode: isDev ? 'development' : 'production',
     // TODO webpackHotDevClientPath
     entry: projectPath('src/index.js'),
+    // entry: projectPath('tester/index.js'),
     output: {
       path: outputPath,
       // Add /* filename */ comments to generated require()s in the output.
