@@ -71,6 +71,7 @@ module.exports = function(env = { production: false } /* , argv */) {
   };
   const lessOptions = {
     modifyVars: theme,
+    javascriptEnabled: true,
   };
   const cssOptions = {
     importLoaders: 1,
