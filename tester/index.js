@@ -1,3 +1,5 @@
+import './polyfill';
+
 function aaa(A) {
   return A;
 }
@@ -10,3 +12,19 @@ export default class A {
 }
 
 alert(A.x);
+
+const map = new Map();
+
+map.set('aaa', '1');
+
+function* bbb() {
+  yield 1;
+}
+
+async function ccc() {
+  await Promise.resolve();
+  return 2;
+}
+
+window.xxx1 = bbb();
+window.xxx2 = ccc();

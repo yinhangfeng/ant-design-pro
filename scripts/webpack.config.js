@@ -41,7 +41,7 @@ module.exports = function(env = { production: false } /* , argv */) {
 
   // https://github.com/browserslist/browserslist
   let browsers;
-  if (isDev) {
+  if (isDev && !process.env.BUILD_DEV) {
     // dev 环境只兼容新浏览器 以方便调试 增加编译速度 TODO 用环境变量配置
     browsers = ['last 3 Chrome versions'];
   } else {
@@ -230,8 +230,8 @@ module.exports = function(env = { production: false } /* , argv */) {
   const config = {
     mode: isDev ? 'development' : 'production',
     // TODO webpackHotDevClientPath
-    entry: projectPath('src/index.js'),
-    // entry: projectPath('tester/index.js'),
+    // entry: projectPath('src/index.js'),
+    entry: projectPath('tester/index.js'),
     output: {
       path: outputPath,
       // Add /* filename */ comments to generated require()s in the output.
@@ -241,7 +241,7 @@ module.exports = function(env = { production: false } /* , argv */) {
       chunkFilename: `[name]${jsHash}.async.js`,
     },
     // 'source-map'
-    devtool: isDev ? 'eval-source-map' : 'none',
+    devtool: isDev && !process.env.BUILD_DEV ? 'eval-source-map' : 'none',
     devServer: isDev
       ? {
           port: 9007,

@@ -44,6 +44,7 @@ module.exports = function({ isDev, targets, browsers }) {
       [
         // Latest stable ECMAScript features
         // 包括的插件 https://github.com/babel/babel/blob/master/packages/babel-preset-env/data/plugins.json
+        // 包括的 built-ins https://github.com/babel/babel/blob/master/packages/babel-preset-env/data/built-ins.json
         require('@babel/preset-env').default,
         {
           targets: targets || { browsers },
@@ -58,6 +59,10 @@ module.exports = function({ isDev, targets, browsers }) {
           modules: false,
           // TODO
           exclude: [
+            // promise 使用 bluebird
+            // 'es6.promise',
+            // 'es7.promise.finally',
+
             'transform-typeof-symbol',
             'transform-unicode-regex',
             'transform-sticky-regex',
@@ -115,7 +120,7 @@ module.exports = function({ isDev, targets, browsers }) {
         [
           require('@babel/plugin-transform-runtime').default,
           {
-            helpers: false,
+            helpers: true,
             polyfill: false,
             regenerator: true,
           },
@@ -128,13 +133,14 @@ module.exports = function({ isDev, targets, browsers }) {
           },
         ],
         // function* () { yield 42; yield 43; }
-        [
-          require('@babel/plugin-transform-regenerator').default,
-          {
-            // Async functions are converted to generators by @babel/preset-env
-            async: false,
-          },
-        ],
+        // preset-env 已经包括
+        // [
+        //   require('@babel/plugin-transform-regenerator').default,
+        //   {
+        //     // Async functions are converted to generators by @babel/preset-env
+        //     async: false,
+        //   },
+        // ],
         // Adds syntax support for import()
         require('@babel/plugin-syntax-dynamic-import').default,
       ])

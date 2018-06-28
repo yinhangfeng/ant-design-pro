@@ -8,6 +8,7 @@
     "start": "webpack-dev-server --open --config scripts/webpack.config.js",
     "start:no-proxy": "cross-env NO_PROXY=true ESLINT=none roadhog dev",
     "build": "webpack --env.production --config scripts/webpack.config.js --display-optimization-bailout",
+    "build:dev": "BUILD_DEV=true webpack --config scripts/webpack.config.js",
     "site": "roadhog-api-doc static && gh-pages -d dist",
     "analyze": "cross-env ANALYZE=true webpack --env.production --config scripts/webpack.config.js",
     "lint:style": "stylelint \"src/**/*.less\" --syntax less",
